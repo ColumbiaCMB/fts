@@ -31,6 +31,14 @@ class FTSData(object):
         self.raw_data = np.array(data)
         self.raw_position = self.raw_data[:,0]
         self.raw_visibility = self.raw_data[:,1]
+    def load_from_npz(self,filename):
+        fh = np.load(filename)
+        x = fh['position']/20000.0 # convert counts to cm
+        y = fh['r']
+        self.raw_data = np.vstack((x,y)).T
+        self.raw_position = x
+        self.raw_visibility = y
+        self.title = filename
     def analyze(self,white_light_fringe_offset,detrend=plt.mlab.detrend_linear,max_offset = None,window=np.hanning):
         if white_light_fringe_offset == 'auto':
             white_light_fringe_index = self.raw_visibility.argmax()
